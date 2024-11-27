@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'idea'
+}
+
+group = 'by.clevertec'
+version = '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.hibernate:hibernate-core:6.2.6.Final'
+
+    // PostgreSQL Driver
+    implementation 'org.postgresql:postgresql:42.7.2'
+
+    // Lombok
+    implementation 'org.projectlombok:lombok:1.18.30'
+    implementation 'org.projectlombok:lombok:1.18.26'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+application {
+    mainClass = 'ru.clevertec.Main'
+}
+
+test {
+    useJUnitPlatform()
+}
