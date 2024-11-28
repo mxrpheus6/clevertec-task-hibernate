@@ -2,11 +2,17 @@ package by.clevertec;
 
 import by.clevertec.entity.Car;
 import by.clevertec.service.CarService;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.List;
 
+@SpringBootApplication
 public class Main {
     public static void main(String[] args) {
+        SpringApplication.run(Main.class, args);
+
+        /*
         CarService carService = new CarService();
 
         Car car = new Car();
@@ -19,5 +25,6 @@ public class Main {
         List<Car> cars = carService.getAllCars();
 
         System.out.println(cars);
+         */
     }
 }
