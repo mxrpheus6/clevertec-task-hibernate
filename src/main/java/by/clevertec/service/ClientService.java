@@ -1,5 +1,6 @@
 package by.clevertec.service;
 
+import by.clevertec.entity.Car;
 import by.clevertec.entity.Client;
 import by.clevertec.util.HibernateUtil;
 import org.hibernate.Session;
@@ -75,6 +76,21 @@ public class ClientService {
                 transaction.rollback();
                 throw e;
             }
+        }
+    }
+
+    public Client buyCar(Client client, Car car) {
+        try (Session session = hibernateUtil.getSession()) {
+            Transaction transaction = session.beginTransaction();
+            client.getCars().add(car);
+            try {
+                session.merge(client);
+                transaction.commit();
+            } catch (Exception e) {
+                transaction.rollback();
+                throw e;
+            }
+            return client;
         }
     }
 }
