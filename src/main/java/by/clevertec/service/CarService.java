@@ -2,6 +2,7 @@ package by.clevertec.service;
 
 import by.clevertec.entity.Car;
 import by.clevertec.entity.CarShowroom;
+import by.clevertec.entity.enums.SortingOrder;
 import by.clevertec.util.HibernateUtil;
 import jakarta.persistence.criteria.Predicate;
 import org.hibernate.Session;
@@ -34,11 +35,18 @@ public class CarService {
         }
     }
 
-    public List<Car> getAllCars() {
+    public List<Car> getAllCars(SortingOrder sortingOrder) {
         try (Session session = hibernateUtil.getSession()) {
             var criteriaBuilder = session.getCriteriaBuilder();
             var criteriaQuery = criteriaBuilder.createQuery(Car.class);
-            criteriaQuery.from(Car.class);
+            var carRoot = criteriaQuery.from(Car.class);
+            if (sortingOrder != null) {
+                if (sortingOrder == SortingOrder.ASC) {
+                    criteriaQuery.orderBy(criteriaBuilder.asc(carRoot.get("price")));
+                } else {
+                    criteriaQuery.orderBy(criteriaBuilder.desc(carRoot.get("price")));
+                }
+            }
             return session.createQuery(criteriaQuery).getResultList();
         }
     }
