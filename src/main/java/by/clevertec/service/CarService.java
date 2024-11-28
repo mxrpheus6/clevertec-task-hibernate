@@ -2,11 +2,14 @@ package by.clevertec.service;
 
 import by.clevertec.entity.Car;
 import by.clevertec.entity.CarShowroom;
+import by.clevertec.entity.enums.SortingOrder;
 import by.clevertec.util.HibernateUtil;
+import jakarta.persistence.criteria.Predicate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,12 +35,39 @@ public class CarService {
         }
     }
 
-    public List<Car> getAllCars() {
+    public List<Car> getAllCars(SortingOrder sortingOrder) {
         try (Session session = hibernateUtil.getSession()) {
             var criteriaBuilder = session.getCriteriaBuilder();
             var criteriaQuery = criteriaBuilder.createQuery(Car.class);
-            criteriaQuery.from(Car.class);
+            var carRoot = criteriaQuery.from(Car.class);
+            if (sortingOrder != null) {
+                if (sortingOrder == SortingOrder.ASC) {
+                    criteriaQuery.orderBy(criteriaBuilder.asc(carRoot.get("price")));
+                } else {
+                    criteriaQuery.orderBy(criteriaBuilder.desc(carRoot.get("price")));
+                }
+            }
             return session.createQuery(criteriaQuery).getResultList();
+        }
+    }
+
+    public List<Car> getAllCarsWithPagination(SortingOrder sortingOrder, int page, int pageSize) {
+        try (Session session = hibernateUtil.getSession()) {
+            var criteriaBuilder = session.getCriteriaBuilder();
+            var criteriaQuery = criteriaBuilder.createQuery(Car.class);
+            var carRoot = criteriaQuery.from(Car.class);
+            if (sortingOrder != null) {
+                if (sortingOrder == SortingOrder.ASC) {
+                    criteriaQuery.orderBy(criteriaBuilder.asc(carRoot.get("price")));
+                } else {
+                    criteriaQuery.orderBy(criteriaBuilder.desc(carRoot.get("price")));
+                }
+            }
+            var query = session.createQuery(criteriaQuery);
+            query.setFirstResult((page - 1) * pageSize);
+            query.setMaxResults(pageSize);
+
+            return query.getResultList();
         }
     }
 
@@ -93,6 +123,51 @@ public class CarService {
                 throw e;
             }
             return car;
+        }
+    }
+
+    List<Car> findCarsByFilters(String brand,
+                                String category,
+                                Integer manufactureYear, Double minPrice,
+                                Double maxPrice) {
+        try (Session session = hibernateUtil.getSession()) {
+            Transaction transaction = session.beginTransaction();
+            try {
+                var criteriaBuilder = session.getCriteriaBuilder();
+                var criteriaQuery = criteriaBuilder.createQuery(Car.class);
+                var carRoot = criteriaQuery.from(Car.class);
+
+                List<Predicate> predicates = new ArrayList<>();
+
+                if (brand != null && !brand.isEmpty()) {
+                    predicates.add(criteriaBuilder.equal(carRoot.get("brand"), brand));
+                }
+
+                if (category != null && !category.isEmpty()) {
+                    predicates.add(criteriaBuilder.equal(carRoot.get("category"), category));
+                }
+
+                if (manufactureYear != null) {
+                    predicates.add(criteriaBuilder.equal(carRoot.get("manufactureYear"), manufactureYear));
+                }
+
+                if (minPrice != null) {
+                    predicates.add(criteriaBuilder.greaterThanOrEqualTo(carRoot.get("price"), minPrice));
+                }
+
+                if (maxPrice != null) {
+                    predicates.add(criteriaBuilder.lessThanOrEqualTo(carRoot.get("price"), maxPrice));
+                }
+
+                criteriaQuery.select(carRoot).where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+                List<Car> resultList = session.createQuery(criteriaQuery).getResultList();
+
+                transaction.commit();
+                return resultList;
+            } catch (Exception e) {
+                transaction.rollback();
+                throw e;
+            }
         }
     }
 }
