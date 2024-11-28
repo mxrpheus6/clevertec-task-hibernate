@@ -1,77 +1,74 @@
 package by.clevertec.service;
 
-import by.clevertec.entity.Car;
 import by.clevertec.entity.Client;
-import by.clevertec.entity.Review;
 import by.clevertec.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class ReviewService {
+public class ClientService {
 
     private final HibernateUtil hibernateUtil;
 
-    public ReviewService(HibernateUtil hibernateUtil) {
+    public ClientService(HibernateUtil hibernateUtil) {
         this.hibernateUtil = hibernateUtil;
     }
 
-    public Review addReview(Client client, Car car, Review review) {
+    public Client addClient(Client client) {
         try (Session session = hibernateUtil.getSession()) {
             Transaction transaction = session.beginTransaction();
-            // TODO: добавить проверку на принадлежность машины
-            review.setClient(client);
-            review.setCar(car);
+            client.setRegistrationDate(LocalDate.now());
             try {
-                session.persist(review);
+                session.persist(client);
                 transaction.commit();
             } catch (Exception e) {
                 transaction.rollback();
                 throw e;
             }
-            return review;
+            return client;
         }
     }
 
-    public List<Review> getAllReviews() {
+    public List<Client> getAllClients() {
         try (Session session = hibernateUtil.getSession()) {
             var criteriaBuilder = session.getCriteriaBuilder();
-            var criteriaQuery = criteriaBuilder.createQuery(Review.class);
-            criteriaQuery.from(Review.class);
+            var criteriaQuery = criteriaBuilder.createQuery(Client.class);
+            criteriaQuery.from(Client.class);
             return session.createQuery(criteriaQuery).getResultList();
         }
     }
 
-    public Review getReviewById(Long id) {
+    public Client getClientById(Long id) {
         try (Session session = hibernateUtil.getSession()) {
-            return session.find(Review.class, id);
+            return session.find(Client.class, id);
         }
     }
 
-    public Review updateReview(Review review) {
+    public Client updateClient(Client client) {
         try (Session session = hibernateUtil.getSession()) {
             Transaction transaction = session.beginTransaction();
             try {
-                session.merge(review);
+                session.merge(client);
                 transaction.commit();
             } catch (Exception e) {
                 transaction.rollback();
                 throw e;
             }
-            return review;
+            return client;
         }
     }
 
-    public void deleteReviewById(Long id) {
+    public void deleteClientById(Long id) {
         try (Session session = hibernateUtil.getSession()) {
             Transaction transaction = session.beginTransaction();
             try {
-                Review review = session.find(Review.class, id);
-                if (review != null) {
-                    session.remove(review);
+                Client client = session.find(Client.class, id);
+                if (client != null) {
+                    session.remove(client);
                 }
                 transaction.commit();
             } catch (Exception e) {

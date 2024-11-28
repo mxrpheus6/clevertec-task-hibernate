@@ -1,8 +1,6 @@
 package by.clevertec.service;
 
-import by.clevertec.entity.Car;
-import by.clevertec.entity.Client;
-import by.clevertec.entity.Review;
+import by.clevertec.entity.CarShowroom;
 import by.clevertec.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -11,67 +9,64 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ReviewService {
+public class CarShowroomService {
 
     private final HibernateUtil hibernateUtil;
 
-    public ReviewService(HibernateUtil hibernateUtil) {
+    public CarShowroomService(HibernateUtil hibernateUtil) {
         this.hibernateUtil = hibernateUtil;
     }
 
-    public Review addReview(Client client, Car car, Review review) {
+    public CarShowroom addCarShowroom(CarShowroom showroom) {
         try (Session session = hibernateUtil.getSession()) {
             Transaction transaction = session.beginTransaction();
-            // TODO: добавить проверку на принадлежность машины
-            review.setClient(client);
-            review.setCar(car);
             try {
-                session.persist(review);
+                session.persist(showroom);
                 transaction.commit();
             } catch (Exception e) {
                 transaction.rollback();
                 throw e;
             }
-            return review;
+            return showroom;
         }
     }
 
-    public List<Review> getAllReviews() {
+    public List<CarShowroom> getAllCarShowrooms() {
         try (Session session = hibernateUtil.getSession()) {
             var criteriaBuilder = session.getCriteriaBuilder();
-            var criteriaQuery = criteriaBuilder.createQuery(Review.class);
-            criteriaQuery.from(Review.class);
+            var criteriaQuery = criteriaBuilder.createQuery(CarShowroom.class);
+            criteriaQuery.from(CarShowroom.class);
             return session.createQuery(criteriaQuery).getResultList();
         }
     }
 
-    public Review getReviewById(Long id) {
+    public CarShowroom getCarShowroomById(Long id) {
         try (Session session = hibernateUtil.getSession()) {
-            return session.find(Review.class, id);
+            return session.find(CarShowroom.class, id);
         }
     }
 
-    public Review updateReview(Review review) {
+    public CarShowroom updateCarShowroom(CarShowroom showroom) {
         try (Session session = hibernateUtil.getSession()) {
             Transaction transaction = session.beginTransaction();
             try {
-                session.merge(review);
+                session.merge(showroom);
                 transaction.commit();
             } catch (Exception e) {
                 transaction.rollback();
                 throw e;
             }
-            return review;
+            return showroom;
         }
     }
 
-    public void deleteReviewById(Long id) {
+    public void deleteCarShowroomById(Long id) {
         try (Session session = hibernateUtil.getSession()) {
             Transaction transaction = session.beginTransaction();
             try {
-                Review review = session.find(Review.class, id);
-                if (review != null) {
-                    session.remove(review);
+                CarShowroom showroom = session.find(CarShowroom.class, id);
+                if (showroom != null) {
+                    session.remove(showroom);
                 }
                 transaction.commit();
             } catch (Exception e) {
