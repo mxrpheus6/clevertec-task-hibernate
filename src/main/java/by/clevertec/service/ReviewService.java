@@ -22,7 +22,9 @@ public class ReviewService {
     public Review addReview(Client client, Car car, Review review) {
         try (Session session = hibernateUtil.getSession()) {
             Transaction transaction = session.beginTransaction();
-            // TODO: добавить проверку на принадлежность машины
+            if (!client.getCars().contains(car)) {
+                throw new RuntimeException("Chosen car does not belong to client");
+            }
             review.setClient(client);
             review.setCar(car);
             try {
