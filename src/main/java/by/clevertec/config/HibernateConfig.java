@@ -1,6 +1,5 @@
 package by.clevertec.config;
 
-
 import by.clevertec.entity.Car;
 import by.clevertec.entity.CarShowroom;
 import by.clevertec.entity.Category;
@@ -23,7 +22,7 @@ public class HibernateConfig {
                     .addAnnotatedClass(Client.class)
                     .addAnnotatedClass(Review.class)
                     .buildSessionFactory();
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             throw new ExceptionInInitializerError(ex);
         }
     }

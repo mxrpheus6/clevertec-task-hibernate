@@ -1,6 +1,7 @@
 package by.clevertec.service;
 
 import by.clevertec.entity.Car;
+import by.clevertec.entity.CarShowroom;
 import by.clevertec.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -73,6 +74,25 @@ public class CarService {
                 transaction.rollback();
                 throw e;
             }
+        }
+    }
+
+    public Car assignCarToShowroom(Car car, CarShowroom showroom) {
+        try (Session session = hibernateUtil.getSession()) {
+            Transaction transaction = session.beginTransaction();
+            car.setShowroom(showroom);
+            if (!showroom.getCars().contains(car)) {
+                showroom.getCars().add(car);
+            }
+            try {
+                session.merge(car);
+                session.merge(showroom);
+                transaction.commit();
+            } catch (Exception e) {
+                transaction.rollback();
+                throw e;
+            }
+            return car;
         }
     }
 }

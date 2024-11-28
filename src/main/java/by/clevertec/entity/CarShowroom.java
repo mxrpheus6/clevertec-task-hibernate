@@ -31,6 +31,6 @@ public class CarShowroom {
     @Column(nullable = false)
     private String address;
 
-    @OneToMany(mappedBy = "showroom", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "showroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Car> cars = new ArrayList<>();
 }
