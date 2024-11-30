@@ -4,10 +4,13 @@ import by.clevertec.entity.Car;
 import by.clevertec.entity.Client;
 import by.clevertec.entity.Review;
 import by.clevertec.util.HibernateUtil;
+import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
+import jakarta.persistence.criteria.Predicate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,6 +20,35 @@ public class ReviewService {
 
     public ReviewService(HibernateUtil hibernateUtil) {
         this.hibernateUtil = hibernateUtil;
+    }
+
+    @Transactional
+    public List<Review> searchReviews(String keyword, Integer rating) {
+        try (Session session = hibernateUtil.getSession()) {
+            var criteriaBuilder = session.getCriteriaBuilder();
+            var criteriaQuery = criteriaBuilder.createQuery(Review.class);
+            var reviewRoot = criteriaQuery.from(Review.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (keyword != null && !keyword.isEmpty()) {
+                String likePattern = "%" + keyword.toLowerCase() + "%";
+                Predicate textLike = criteriaBuilder.like(criteriaBuilder.lower(
+                        reviewRoot.get("text")),
+                        likePattern);
+                predicates.add(textLike);
+            }
+
+            if (rating != null) {
+                predicates.add(criteriaBuilder.equal(reviewRoot.get("rating"), rating));
+            }
+
+            if (!predicates.isEmpty()) {
+                criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+            }
+
+            return session.createQuery(criteriaQuery).getResultList();
+        }
     }
 
     public Review addReview(Client client, Car car, Review review) {

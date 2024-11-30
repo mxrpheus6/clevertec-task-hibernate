@@ -5,6 +5,8 @@ import by.clevertec.entity.CarShowroom;
 import by.clevertec.entity.Category;
 import by.clevertec.entity.enums.SortingOrder;
 import by.clevertec.util.HibernateUtil;
+import jakarta.persistence.EntityGraph;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -36,11 +38,13 @@ public class CarService {
         }
     }
 
-    public List<Car> getAllCars(SortingOrder sortingOrder) {
+    public List<Car> getAllCarsGraph(SortingOrder sortingOrder) {
         try (Session session = hibernateUtil.getSession()) {
             var criteriaBuilder = session.getCriteriaBuilder();
             var criteriaQuery = criteriaBuilder.createQuery(Car.class);
             var carRoot = criteriaQuery.from(Car.class);
+
+            EntityGraph<?> entityGraph = session.getEntityGraph("Car.details");
             if (sortingOrder != null) {
                 if (sortingOrder == SortingOrder.ASC) {
                     criteriaQuery.orderBy(criteriaBuilder.asc(carRoot.get("price")));
@@ -48,6 +52,30 @@ public class CarService {
                     criteriaQuery.orderBy(criteriaBuilder.desc(carRoot.get("price")));
                 }
             }
+
+            return session.createQuery(criteriaQuery)
+                    .setHint("javax.persistence.loadgraph", entityGraph)
+                    .getResultList();
+        }
+    }
+
+    public List<Car> getAllCarsFetch(SortingOrder sortingOrder) {
+        try (Session session = hibernateUtil.getSession()) {
+            var criteriaBuilder = session.getCriteriaBuilder();
+            var criteriaQuery = criteriaBuilder.createQuery(Car.class);
+            var carRoot = criteriaQuery.from(Car.class);
+
+            carRoot.fetch("category", JoinType.LEFT);
+            carRoot.fetch("showroom", JoinType.LEFT);
+
+            if (sortingOrder != null) {
+                if (sortingOrder == SortingOrder.ASC) {
+                    criteriaQuery.orderBy(criteriaBuilder.asc(carRoot.get("price")));
+                } else {
+                    criteriaQuery.orderBy(criteriaBuilder.desc(carRoot.get("price")));
+                }
+            }
+
             return session.createQuery(criteriaQuery).getResultList();
         }
     }

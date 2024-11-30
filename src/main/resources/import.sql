@@ -26,6 +26,20 @@ INSERT INTO review (id, text, rating, car_id, client_id) VALUES (3, 'Good value 
 INSERT INTO review (id, text, rating, car_id, client_id) VALUES (4, 'Luxurious and comfortable.', 5, 3, 4);
 INSERT INTO review (id, text, rating, car_id, client_id) VALUES (5, 'Amazing performance.', 5, 5, 5);
 
+INSERT INTO client_cars (car_id, client_id) VALUES (1, 1);
+INSERT INTO client_cars (car_id, client_id) VALUES (2, 2);
+INSERT INTO client_cars (car_id, client_id) VALUES (3, 4);
+INSERT INTO client_cars (car_id, client_id) VALUES (4, 3);
+INSERT INTO client_cars (car_id, client_id) VALUES (5, 5);
+
+INSERT INTO client_contacts (client_id, contact) VALUES (1, 'chillguy@gmail.com');
+INSERT INTO client_contacts (client_id, contact) VALUES (1, '+375291111111');
+INSERT INTO client_contacts (client_id, contact) VALUES (2, '+375292222222');
+INSERT INTO client_contacts (client_id, contact) VALUES (3, '+375293333333');
+INSERT INTO client_contacts (client_id, contact) VALUES (3, 'vova@gmail.com');
+INSERT INTO client_contacts (client_id, contact) VALUES (4, 'four@gmail.com');
+INSERT INTO client_contacts (client_id, contact) VALUES (5, 'five@gmail.com');
+
 -- Необходимо обновить последовательности т.к. тут мы устанавливали id вручную
 -- Без этого Hibernate устанавливает id новым сущностям начиная с 1
 SELECT setval('car_id_seq', (SELECT MAX(id) FROM car));

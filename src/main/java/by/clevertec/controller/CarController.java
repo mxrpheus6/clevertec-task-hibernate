@@ -34,9 +34,15 @@ public class CarController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/get-all")
-    public ResponseEntity<List<Car>> getAll(@RequestParam(required = false) SortingOrder priceOrder) {
-        List<Car> cars = carService.getAllCars(priceOrder);
+    @GetMapping("/get-all/graph")
+    public ResponseEntity<List<Car>> getAllGraph(@RequestParam(required = false) SortingOrder priceOrder) {
+        List<Car> cars = carService.getAllCarsGraph(priceOrder);
+        return ResponseEntity.ok(cars);
+    }
+
+    @GetMapping("/get-all/fetch")
+    public ResponseEntity<List<Car>> getAllFetch(@RequestParam(required = false) SortingOrder priceOrder) {
+        List<Car> cars = carService.getAllCarsFetch(priceOrder);
         return ResponseEntity.ok(cars);
     }
 
