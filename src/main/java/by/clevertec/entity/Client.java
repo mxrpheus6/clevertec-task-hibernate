@@ -1,5 +1,6 @@
 package by.clevertec.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -34,7 +35,7 @@ public class Client {
     @Column(nullable = false)
     private String name;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "client_contacts", joinColumns = @JoinColumn(name = "client_id"))
     @Column(name = "contact")
     private Set<String> contacts = new HashSet<>();
@@ -42,7 +43,7 @@ public class Client {
     @Column(name = "registration_date")
     private LocalDate registrationDate;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "client_cars",
             joinColumns = @JoinColumn(name = "client_id"),
@@ -50,6 +51,7 @@ public class Client {
     )
     private Set<Car> cars = new HashSet<>();
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Review> reviews = new ArrayList<>();
 }
