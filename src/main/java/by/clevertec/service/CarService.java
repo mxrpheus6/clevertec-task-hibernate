@@ -2,6 +2,7 @@ package by.clevertec.service;
 
 import by.clevertec.entity.Car;
 import by.clevertec.entity.CarShowroom;
+import by.clevertec.entity.Category;
 import by.clevertec.entity.enums.SortingOrder;
 import by.clevertec.util.HibernateUtil;
 import jakarta.persistence.criteria.Predicate;
@@ -126,7 +127,26 @@ public class CarService {
         }
     }
 
-    List<Car> findCarsByFilters(String brand,
+    public Car assignCarToCategory(Car car, Category category) {
+        try (Session session = hibernateUtil.getSession()) {
+            Transaction transaction = session.beginTransaction();
+            car.setCategory(category);
+            if (!category.getCars().contains(car)) {
+                category.getCars().add(car);
+            }
+            try {
+                session.merge(car);
+                session.merge(category);
+                transaction.commit();
+            } catch (Exception e) {
+                transaction.rollback();
+                throw e;
+            }
+            return car;
+        }
+    }
+
+    public List<Car> getAllCarsWithFilters(String brand,
                                 String category,
                                 Integer manufactureYear, Double minPrice,
                                 Double maxPrice) {
@@ -140,11 +160,16 @@ public class CarService {
                 List<Predicate> predicates = new ArrayList<>();
 
                 if (brand != null && !brand.isEmpty()) {
-                    predicates.add(criteriaBuilder.equal(carRoot.get("brand"), brand));
+                    predicates.add(
+                            criteriaBuilder.equal(
+                                    criteriaBuilder.lower(carRoot.get("brand")),
+                                    brand.toLowerCase()));
                 }
 
                 if (category != null && !category.isEmpty()) {
-                    predicates.add(criteriaBuilder.equal(carRoot.get("category"), category));
+                    predicates.add(criteriaBuilder.equal(
+                                    criteriaBuilder.lower(carRoot.get("category")),
+                                    category.toLowerCase()));
                 }
 
                 if (manufactureYear != null) {
