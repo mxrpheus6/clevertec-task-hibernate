@@ -52,18 +52,12 @@ public class CarService {
         }
     }
 
-    public List<Car> getAllCarsWithPagination(SortingOrder sortingOrder, int page, int pageSize) {
+    public List<Car> getAllCarsWithPagination(int page, int pageSize) {
         try (Session session = hibernateUtil.getSession()) {
             var criteriaBuilder = session.getCriteriaBuilder();
             var criteriaQuery = criteriaBuilder.createQuery(Car.class);
             var carRoot = criteriaQuery.from(Car.class);
-            if (sortingOrder != null) {
-                if (sortingOrder == SortingOrder.ASC) {
-                    criteriaQuery.orderBy(criteriaBuilder.asc(carRoot.get("price")));
-                } else {
-                    criteriaQuery.orderBy(criteriaBuilder.desc(carRoot.get("price")));
-                }
-            }
+
             var query = session.createQuery(criteriaQuery);
             query.setFirstResult((page - 1) * pageSize);
             query.setMaxResults(pageSize);

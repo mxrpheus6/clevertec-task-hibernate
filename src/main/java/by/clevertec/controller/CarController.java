@@ -50,6 +50,12 @@ public class CarController {
         return ResponseEntity.ok(filteredCars);
     }
 
+    @GetMapping("/get-all/pagination")
+    public ResponseEntity<List<Car>> getAllCarsWithPagination(@RequestParam int page, @RequestParam int pageSize) {
+        List<Car> paginatedCars = carService.getAllCarsWithPagination(page, pageSize);
+        return ResponseEntity.ok(paginatedCars);
+    }
+
     @PostMapping("/add-car")
     public ResponseEntity<Car> addCar(@RequestBody Car car) {
         Car createdCar = carService.addCar(car);
