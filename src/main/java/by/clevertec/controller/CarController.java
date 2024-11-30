@@ -72,19 +72,13 @@ public class CarController {
     public ResponseEntity<Car> assignCarToShowroom(@PathVariable Long carId, @PathVariable Long showroomId) {
         Car car = carService.getCarById(carId);
         CarShowroom carShowroom = carShowroomService.getCarShowroomById(showroomId);
-
-        car.setShowroom(carShowroom);
-        car = carService.updateCar(car);
-        return ResponseEntity.ok(car);
+        return ResponseEntity.ok(carService.assignCarToShowroom(car, carShowroom));
     }
 
     @PostMapping("/assign-category/car={carId}&category={categoryId}")
     public ResponseEntity<Car> assignCarToCategory(@PathVariable Long carId, @PathVariable Long categoryId) {
         Car car = carService.getCarById(carId);
         Category category = categoryService.getCategoryById(categoryId);
-
-        car.setCategory(category);
-        car = carService.updateCar(car);
-        return ResponseEntity.ok(car);
+        return ResponseEntity.ok(carService.assignCarToCategory(car, category));
     }
 }
