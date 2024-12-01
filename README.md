@@ -4,7 +4,8 @@
 Выполнено 4.5 задания (5 задание выполнено наполовину, поиск есть, но без использования Hibernate 
 Search). 
 
-## 1. Получить список всех машин с помощью Entity Graph и возможностью сортировки по цене (GET /car-api/get-all/graph?priceOrder=DESC)
+## 1. Получить список всех машин с помощью Entity Graph и возможностью сортировки по цене 
+`GET /car-api/get-all/graph?priceOrder=DESC`
 
 ### Request Parameters (необязательны):
 - `priceOrder`: Сортировка по цене (ASC или DESC)
@@ -47,11 +48,13 @@ Search).
 ]
 ```
 
-## 2. Получить список всех машин с помощью JOIN FETCH (GET /car-api/get-all/fetch?priceOrder=DESC)
+## 2. Получить список всех машин с помощью JOIN FETCH 
+`(GET /car-api/get-all/fetch?priceOrder=DESC)`
 
 Request Parameters и Response Body совпадает с запросом 1.
 
-## 3. Получить список всех машин с фильтрацией (GET /car-api/get-all/filters?brand=bmw&minPrice=80000)
+## 3. Получить список всех машин с фильтрацией 
+`(GET /car-api/get-all/filters?brand=bmw&minPrice=80000)`
 
 ### Request Parameters (необязательны):
 - `brand`: Марка машины
@@ -82,7 +85,8 @@ Request Parameters и Response Body совпадает с запросом 1.
 ]
 ```
 
-## 4. Добавить машину (POST /car-api/add-car)
+## 4. Добавить машину 
+`(POST /car-api/add-car)`
 
 ### Request Body (JSON):
 ```json
@@ -107,7 +111,8 @@ Request Parameters и Response Body совпадает с запросом 1.
 }
 ```
 
-## 5. Привязать машину к автосалону (POST /car-api/assign-showroom/car={carId}&showroom={showroomId})
+## 5. Привязать машину к автосалону 
+`(POST /car-api/assign-showroom/car={carId}&showroom={showroomId})`
 
 ### Path Variables (обязательны):
 - `carId`: Идентификатор машины
@@ -130,7 +135,8 @@ Request Parameters и Response Body совпадает с запросом 1.
 }
 ```
 
-## 5. Привязать машину к типу кузова (POST /car-api/assign-category/car={carId}&category={categoryId})
+## 5. Привязать машину к типу кузова 
+`(POST /car-api/assign-category/car={carId}&category={categoryId})`
 
 ### Path Variables (обязательны):
 - `carId`: Идентификатор машины
@@ -156,7 +162,8 @@ Request Parameters и Response Body совпадает с запросом 1.
 }
 ```
 
-## 6. Получить список всех машин с пагинацией (GET /car-api/get-all/pagination?page=3&pageSize=2)
+## 6. Получить список всех машин с пагинацией 
+`(GET /car-api/get-all/pagination?page=3&pageSize=2)`
 
 ### Request Parameters (обязательны):
 - `page`: Номер страницы
@@ -199,7 +206,8 @@ Request Parameters и Response Body совпадает с запросом 1.
   }
 ]
 ```
-## 7. Получить список всех клиентов (GET /client-api/get-all)
+## 7. Получить список всех клиентов 
+`(GET /client-api/get-all)`
 
 ### Response Body (JSON):
 ```json
@@ -260,7 +268,8 @@ Request Parameters и Response Body совпадает с запросом 1.
 ]
 ```
 
-## 8. Добавить клиента (POST /client-api/add-client)
+## 8. Добавить клиента 
+`(POST /client-api/add-client)`
 
 ### Request Body (JSON):
 ```json
@@ -284,7 +293,8 @@ Request Parameters и Response Body совпадает с запросом 1.
 }
 ```
 
-## 9. Привязать машину к клиенту (POST /client-api/buy-car/client={clientId}&car={carId})
+## 9. Привязать машину к клиенту 
+`(POST /client-api/buy-car/client={clientId}&car={carId})`
 
 ### Path Variables (обязательны):
 - `clientId`: Идентификатор клиента
@@ -321,7 +331,8 @@ Request Parameters и Response Body совпадает с запросом 1.
 }
 ```
 
-## 10. Получить список всех отзывов (GET /review-api/get-all)
+## 10. Получить список всех отзывов 
+`(GET /review-api/get-all)`
 
 ### Response Body (JSON):
 ```json
@@ -361,7 +372,8 @@ Request Parameters и Response Body совпадает с запросом 1.
 ]
 ```
 
-## 11. Поиск отзывов по тексту и рейтингу (GET /review-api/get-all/search?keyword=reliable&rating=4)
+## 11. Поиск отзывов по тексту и рейтингу 
+`(GET /review-api/get-all/search?keyword=reliable&rating=4)`
 
 ### Request Parameters (обязательны):
 - `keyword`: Ключевое слово, или несколько слов
@@ -420,7 +432,8 @@ Request Parameters и Response Body совпадает с запросом 1.
 ]
 ```
 
-## 12. Добавить отзыв (POST /review-api/add-review/client={clientId}/car={carId})
+## 12. Добавить отзыв 
+`(POST /review-api/add-review/client={clientId}/car={carId})`
 
 ### Request Parameters (обязательны):
 - `clientId`: Идентификатор клиента
