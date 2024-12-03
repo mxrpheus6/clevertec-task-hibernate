@@ -36,7 +36,11 @@ dependencies {
 }
 
 application {
-    mainClass = 'ru.clevertec.Main'
+    mainClass = 'by.clevertec.Main'
+}
+
+bootJar {
+    mainClassName = 'by.clevertec.Main'
 }
 
 test {
